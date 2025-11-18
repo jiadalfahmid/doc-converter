@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Document Converter | Pandoc</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        /* Custom scrollbar for better appearance on dark theme */
+        textarea::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-thumb { background-color: #5b21b6; /* darker purple */ border-radius: 4px; }
+        textarea::-webkit-scrollbar-track { background-color: #374151; /* dark gray */ }
+        
+        /* Style for flash messages */
+        .flash-error { background-color: #fca5a5; color: #7f1d1d; border: 1px solid #ef4444; }
+        .flash-success { background-color: #a7f3d0; color: #065f46; border: 1px solid #10b981; }
+        
+        .card {
+            background-color: #1f2937; /* Darker card background */
+            border: 1px solid #374151;
+        }
+        .text-purple {
+            color: #a855f7; /* Tailwind's purple-500 */
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'main-bg': '#111827',     /* Deep dark background */
+                        'card-bg': '#1f2937',     /* Dark card background */
+                        'purple-500': '#a855f7',  /* Primary Purple */
+                        'purple-600': '#9333ea',  /* Button hover */
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans bg-main-bg min-h-screen p-4 sm:p-8 flex flex-col items-center text-gray-100">
+
+    <div class="w-full max-w-4xl card shadow-2xl rounded-2xl p-6 sm:p-8">
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-purple mb-2">
+                <i class="fa-solid fa-file-contract mr-3"></i> Universal Document Converter
+            </h1>
+            <p class="text-gray-400">
+                Leveraging Pandoc for seamless conversion of Markdown, LaTeX, HTML, and Text to DOCX.
+            </p>
+        </header>
+
+        <!-- Flash Messages Display -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="mb-6 p-4 rounded-xl text-center">
+                    {% for category, message in messages %}
+                        <li class="p-3 rounded-lg text-sm font-medium {% if 'Error' in message or 'failed' in message %}flash-error{% else %}flash-success{% endif %}">
+                            <i class="fa-solid {% if 'Error' in message or 'failed' in message %}fa-circle-exclamation{% else %}fa-circle-check{% endif %} mr-2"></i> {{ message }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Conversion Form -->
+        <form method="POST" action="/convert" enctype="multipart/form-data" class="space-y-6">
+            
+            <!-- Filename and Upload Section (Responsive Layout) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                <!-- Filename Input -->
+                <label class="block md:col-span-2">
+                    <span class="text-base font-semibold text-gray-300 mb-2 block">1. Output Filename</span>
+                    <div class="relative">
+                        <input type="text" name="output_filename" placeholder="e.g., My_Report" value="document_export"
+                               class="w-full p-3 pl-10 card rounded-lg text-gray-200 focus:ring-purple-500 focus:border-purple-500 transition duration-150 text-sm">
+                        <i class="fa-solid fa-file-signature absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500"></i>
+                        <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs font-mono select-none">.docx</span>
+                    </div>
+                </label>
+
+                <!-- File Upload -->
+                <label class="block">
+                    <span class="text-base font-semibold text-gray-300 mb-2 block">2. Upload File (Optional)</span>
+                    <div class="flex items-center justify-center p-3 card border-2 border-gray-600 border-dashed rounded-lg cursor-pointer hover:border-purple-500 transition duration-200">
+                        <i class="fa-solid fa-cloud-arrow-up text-purple-500 mr-2"></i>
+                        <span class="text-sm text-gray-400 truncate" id="file-name">Click to Browse</span>
+                        <input type="file" name="file" class="hidden" accept=".md, .tex, .latex, .html, .htm, .txt" 
+                            onchange="document.getElementById('file-name').textContent = this.files[0].name">
+                    </div>
+                </label>
+            </div>
+
+            <div class="relative flex items-center">
+                <div class="flex-grow border-t border-gray-700"></div>
+                <span class="flex-shrink mx-4 text-gray-500 text-sm font-medium">OR</span>
+                <div class="flex-grow border-t border-gray-700"></div>
+            </div>
+
+            <!-- Text Area Section -->
+            <label class="block">
+                <span class="text-lg font-semibold text-gray-300 mb-2 block">3. Paste Text Here</span>
+                <textarea 
+                    name="content"
+                    rows="15" 
+                    placeholder="Paste your content here (Markdown, LaTeX, or Plain Text)... Formulas like $E=mc^2$ are fully supported!"
+                    class="w-full p-4 card rounded-xl focus:border-purple-500 focus:ring-purple-500 transition duration-150 resize-none shadow-inner text-sm bg-gray-800 text-gray-200 border border-gray-600"
+                ></textarea>
+            </label>
+            
+            <!-- Conversion Button -->
+            <button type="submit" class="w-full bg-purple-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg shadow-purple-900/50 hover:bg-purple-600 transition duration-300 transform hover:scale-[1.005] active:scale-[0.99] text-xl">
+                <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Convert & Download DOCX
+            </button>
+        </form>
+    </div>
+
+    <footer class="mt-8 text-center text-gray-500 text-sm">
+        <p class="mt-1">
+            Created with <i class="fa-solid fa-heart text-violet-500"></i> by Jiad Al Fahmid
+        </p>
+    </footer>
+
+</body>
+</html>
