@@ -3,28 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Document Converter | Pandoc</title>
+    <title>Universal Document Converter</title>
+    <!-- Favicon Integration -->
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.freepik.com/512/13904/13904080.png">
+    
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Load Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <style>
-        /* Custom scrollbar for better appearance on dark theme */
-        textarea::-webkit-scrollbar { width: 8px; }
-        textarea::-webkit-scrollbar-thumb { background-color: #5b21b6; /* darker purple */ border-radius: 4px; }
-        textarea::-webkit-scrollbar-track { background-color: #374151; /* dark gray */ }
-        
-        /* Style for flash messages */
-        .flash-error { background-color: #fca5a5; color: #7f1d1d; border: 1px solid #ef4444; }
-        .flash-success { background-color: #a7f3d0; color: #065f46; border: 1px solid #10b981; }
-        
-        .card {
-            background-color: #1f2937; /* Darker card background */
-            border: 1px solid #374151;
+        /* Define a background that supports the glass effect */
+        body {
+            background: #0F0918; /* Deep dark purple background */
+            background-image: radial-gradient(circle at 10% 50%, rgba(139, 92, 246, 0.15) 0%, rgba(20, 0, 40, 0.9) 80%);
+            transition: background-color 0.3s;
         }
-        .text-purple {
-            color: #a855f7; /* Tailwind's purple-500 */
+        
+        /* Custom scrollbar */
+        textarea::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-thumb { background-color: #a855f7; border-radius: 4px; }
+        textarea::-webkit-scrollbar-track { background-color: #1f2937; }
+        
+        /* Glassmorphism Card Style */
+        .glass-card {
+            background-color: rgba(30, 0, 50, 0.35); /* Increased opacity for better contrast */
+            backdrop-filter: blur(15px); /* Increased blur */
+            border: 1px solid rgba(168, 85, 247, 0.5); /* Stronger border */
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5); /* Deeper shadow */
+            transition: all 0.4s ease-in-out;
+        }
+        .glass-card:hover {
+            border: 1px solid #d8b4fe; /* Light border on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 15px 50px 0 rgba(168, 85, 247, 0.3);
+        }
+
+        /* Primary Gradient for Buttons */
+        .gradient-button {
+            background: linear-gradient(90deg, #9333ea 0%, #d8b4fe 100%);
+            box-shadow: 0 4px 25px rgba(168, 85, 247, 0.6); /* Stronger initial glow */
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .gradient-button:hover {
+            background: linear-gradient(90deg, #a855f7 0%, #e9d5ff 100%);
+            transform: scale(1.005) translateY(-1px);
+            box-shadow: 0 8px 35px rgba(168, 85, 247, 0.9); /* Intense glow on hover */
+        }
+
+        /* Input Field Hover/Focus Styles */
+        .glass-input:hover {
+            background-color: rgba(255, 255, 255, 0.1); /* Subtle light hover on input */
+        }
+        
+        /* Flash Message Styles */
+        .flash-error { 
+            background-color: rgba(239, 68, 68, 0.2); 
+            color: #fca5a5; 
+            border: 1px solid #ef4444; 
+        }
+        .flash-success { 
+            background-color: rgba(16, 185, 129, 0.2); 
+            color: #a7f3d0; 
+            border: 1px solid #10b981; 
+        }
+        
+        .text-purple-vibrant {
+            color: #e9d5ff;
+            text-shadow: 0 0 8px rgba(168, 85, 247, 0.8); /* Sharper text glow */
         }
     </style>
     <script>
@@ -35,74 +81,100 @@
                         sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        'main-bg': '#111827',     /* Deep dark background */
-                        'card-bg': '#1f2937',     /* Dark card background */
-                        'purple-500': '#a855f7',  /* Primary Purple */
-                        'purple-600': '#9333ea',  /* Button hover */
+                        'main-bg': '#0F0918',
+                        'purple-500': '#a855f7',
                     }
                 }
             }
         }
+
+        /**
+         * Updates the displayed filename when a file is selected.
+         */
+        function updateFileName(input) {
+            const fileNameSpan = document.getElementById('file-name');
+            if (input.files && input.files.length > 0) {
+                fileNameSpan.textContent = input.files[0].name;
+            } else {
+                fileNameSpan.textContent = 'Click to Browse or Drop';
+            }
+        }
     </script>
 </head>
-<body class="font-sans bg-main-bg min-h-screen p-4 sm:p-8 flex flex-col items-center text-gray-100">
+<body class="font-sans min-h-screen p-4 sm:p-8 flex flex-col items-center text-gray-100">
 
-    <div class="w-full max-w-4xl card shadow-2xl rounded-2xl p-6 sm:p-8">
-        <header class="mb-8 text-center">
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-purple mb-2">
-                <i class="fa-solid fa-file-contract mr-3"></i> Universal Document Converter
+    <div class="w-full max-w-4xl glass-card rounded-[30px] p-6 sm:p-10 hover:shadow-purple-900/80">
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-purple-vibrant flex items-center justify-center mb-2 drop-shadow-lg">
+                <!-- Custom PNG Icon -->
+                <img src="https://cdn-icons-png.freepik.com/512/13904/13904080.png" class="w-12 h-12 mr-4 drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]" alt="Document Conversion Icon">
+                Universal Document Converter
             </h1>
-            <p class="text-gray-400">
-                Leveraging Pandoc for seamless conversion of Markdown, LaTeX, HTML, and Text to DOCX.
+            <p class="text-gray-300 text-xl font-light">
+                Your seamless, high-fidelity document processor.
             </p>
         </header>
 
         <!-- Flash Messages Display -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <ul class="mb-6 p-4 rounded-xl text-center">
+                <ul class="mb-8 p-4 rounded-xl text-center">
                     {% for category, message in messages %}
-                        <li class="p-3 rounded-lg text-sm font-medium {% if 'Error' in message or 'failed' in message %}flash-error{% else %}flash-success{% endif %}">
-                            <i class="fa-solid {% if 'Error' in message or 'failed' in message %}fa-circle-exclamation{% else %}fa-circle-check{% endif %} mr-2"></i> {{ message }}
+                        <li class="p-3 rounded-xl text-sm font-medium border-2 {% if 'Error' in message or 'failed' in message or 'not found' in message %}flash-error{% else %}flash-success{% endif %}">
+                            <i class="fa-solid {% if 'Error' in message or 'failed' in message or 'not found' in message %}fa-circle-exclamation{% else %}fa-circle-check{% endif %} mr-2"></i> {{ message }}
                         </li>
                     {% endfor %}
                 </ul>
             {% endif %}
         {% endwith %}
 
+        <!-- Instruction for Multi-File Projects - Enhanced hover effect -->
+        <div class="bg-gray-800/40 p-5 rounded-xl border border-purple-500/50 mb-8 text-sm hover:border-purple-500 transition duration-300 transform hover:scale-[1.005]">
+            <h3 class="font-bold text-purple-vibrant mb-2"><i class="fa-solid fa-folder-tree mr-2"></i> Multi-File LaTeX Project Support:</h3>
+            <p class="text-gray-300">
+                To convert a full LaTeX project (including figures, bibliography, and multiple `.tex` files), please:
+                <ol class="list-decimal list-inside ml-4 mt-2 space-y-1">
+                    <li>Ensure your main LaTeX file (with `\begin{document}`) is named **`main.tex`**.</li>
+                    <li>Gather all `.tex` files, figures, and bibliography files into a single **`.zip`** archive.</li>
+                    <li>Upload the `.zip` file below.</li>
+                </ol>
+            </p>
+        </div>
+
+
         <!-- Conversion Form -->
-        <form method="POST" action="/convert" enctype="multipart/form-data" class="space-y-6">
+        <form method="POST" action="/convert" enctype="multipart/form-data" class="space-y-8">
             
             <!-- Filename and Upload Section (Responsive Layout) -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
                 <!-- Filename Input -->
                 <label class="block md:col-span-2">
                     <span class="text-base font-semibold text-gray-300 mb-2 block">1. Output Filename</span>
                     <div class="relative">
                         <input type="text" name="output_filename" placeholder="e.g., My_Report" value="document_export"
-                               class="w-full p-3 pl-10 card rounded-lg text-gray-200 focus:ring-purple-500 focus:border-purple-500 transition duration-150 text-sm">
-                        <i class="fa-solid fa-file-signature absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500"></i>
-                        <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs font-mono select-none">.docx</span>
+                               class="w-full p-4 pl-12 glass-card rounded-xl text-gray-200 focus:ring-purple-500 focus:ring-2 focus:border-transparent transition duration-150 text-base border-gray-600/50 bg-gray-900/50 glass-input">
+                        <i class="fa-solid fa-file-signature absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-500"></i>
+                        <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm font-mono select-none">.docx</span>
                     </div>
                 </label>
 
                 <!-- File Upload -->
                 <label class="block">
                     <span class="text-base font-semibold text-gray-300 mb-2 block">2. Upload File (Optional)</span>
-                    <div class="flex items-center justify-center p-3 card border-2 border-gray-600 border-dashed rounded-lg cursor-pointer hover:border-purple-500 transition duration-200">
-                        <i class="fa-solid fa-cloud-arrow-up text-purple-500 mr-2"></i>
-                        <span class="text-sm text-gray-400 truncate" id="file-name">Click to Browse</span>
-                        <input type="file" name="file" class="hidden" accept=".md, .tex, .latex, .html, .htm, .txt" 
-                            onchange="document.getElementById('file-name').textContent = this.files[0].name">
+                    <div class="flex flex-col items-center justify-center p-4 glass-card border-2 border-purple-500/50 border-dashed rounded-xl cursor-pointer hover:bg-gray-700/50 transition duration-200 h-full hover:border-purple-500">
+                        <i class="fa-solid fa-cloud-arrow-up text-purple-500 text-2xl mb-1"></i>
+                        <span class="text-sm text-gray-300 font-medium truncate" id="file-name">Click to Browse or Drop</span>
+                        <input type="file" name="file" class="hidden" accept=".md, .tex, .latex, .html, .htm, .txt, .zip" 
+                            onchange="updateFileName(this)">
                     </div>
                 </label>
             </div>
 
             <div class="relative flex items-center">
-                <div class="flex-grow border-t border-gray-700"></div>
+                <div class="flex-grow border-t border-gray-700/50"></div>
                 <span class="flex-shrink mx-4 text-gray-500 text-sm font-medium">OR</span>
-                <div class="flex-grow border-t border-gray-700"></div>
+                <div class="flex-grow border-t border-gray-700/50"></div>
             </div>
 
             <!-- Text Area Section -->
@@ -110,22 +182,22 @@
                 <span class="text-lg font-semibold text-gray-300 mb-2 block">3. Paste Text Here</span>
                 <textarea 
                     name="content"
-                    rows="15" 
+                    rows="10" 
                     placeholder="Paste your content here (Markdown, LaTeX, or Plain Text)... Formulas like $E=mc^2$ are fully supported!"
-                    class="w-full p-4 card rounded-xl focus:border-purple-500 focus:ring-purple-500 transition duration-150 resize-none shadow-inner text-sm bg-gray-800 text-gray-200 border border-gray-600"
+                    class="w-full p-4 glass-card rounded-xl focus:border-purple-500 focus:ring-purple-500 focus:ring-2 transition duration-150 resize-none shadow-inner text-base text-gray-200 border-gray-600/50 bg-gray-900/50 glass-input"
                 ></textarea>
             </label>
             
             <!-- Conversion Button -->
-            <button type="submit" class="w-full bg-purple-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg shadow-purple-900/50 hover:bg-purple-600 transition duration-300 transform hover:scale-[1.005] active:scale-[0.99] text-xl">
+            <button type="submit" class="w-full text-white font-extrabold py-4 px-6 rounded-xl gradient-button text-xl uppercase tracking-wider">
                 <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Convert & Download DOCX
             </button>
         </form>
     </div>
 
-    <footer class="mt-8 text-center text-gray-500 text-sm">
+    <footer class="mt-12 text-center text-gray-500 text-sm">
         <p class="mt-1">
-            Created with <i class="fa-solid fa-heart text-violet-500"></i> by Jiad Al Fahmid
+            Created with <i class="fa-solid fa-heart text-red-500"></i> by **Jiad Al Fahmid**
         </p>
     </footer>
 
