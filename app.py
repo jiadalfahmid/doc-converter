@@ -20,9 +20,11 @@ def get_file_extension(filename):
 
 def get_input_format(ext):
     """Maps common extensions to Pandoc input formats."""
-    # Using 'commonmark' for better Markdown list support
+    # Custom format for robust mixed content conversion
     if ext in ['md', 'markdown']:
-        return 'commonmark' 
+        # FIX: Using 'markdown+tex_math_dollars+raw_tex' to ensure LaTeX math and raw blocks are processed correctly 
+        # when reading Markdown, which is crucial for mixed input.
+        return 'markdown+tex_math_dollars+raw_tex' 
     elif ext in ['tex', 'latex']:
         return 'latex'
     elif ext in ['html', 'htm']:
@@ -128,7 +130,7 @@ def convert():
             raise Exception("Input path could not be determined.")
 
         # 2. Configure Pandoc
-        # This will now correctly use 'commonmark' if 'md' is selected, or 'latex' if 'tex' is selected.
+        # This will now correctly use the appropriate format based on user selection/file extension.
         input_format = get_input_format(ext)
         output_filename = output_name_safe
         output_filepath = os.path.join(tmpdir, output_filename)
