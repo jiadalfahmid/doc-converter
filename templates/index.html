@@ -1,205 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Basic SEO -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Document Converter</title>
-    <!-- Favicon Integration -->
+    <title>Universal Document Converter | Convert LaTeX, Markdown & Text to DOCX</title>
+    <meta name="description" content="Convert LaTeX, Markdown, HTML, ZIP projects, and plain text into DOCX instantly. Fast, accurate, and seamless document conversion online.">
+    <meta name="keywords" content="document converter, latex to docx, markdown to docx, text converter, online converter, zip latex project, report converter, academic converter">
+    <meta name="author" content="Jiad Al Fahmid">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Social Preview -->
+    <meta property="og:title" content="Universal Document Converter">
+    <meta property="og:description" content="Fast, accurate, and effortless document conversion. Convert LaTeX, Markdown, or Text into DOCX instantly.">
+    <meta property="og:image" content="https://cdn-icons-png.freepik.com/512/13904/13904080.png">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://doc-converter-49n4.onrender.com/">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Universal Document Converter">
+    <meta name="twitter:description" content="Convert LaTeX and Markdown to DOCX instantly.">
+    <meta name="twitter:image" content="https://cdn-icons-png.freepik.com/512/13904/13904080.png">
+
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://cdn-icons-png.freepik.com/512/13904/13904080.png">
-    
-    <!-- Load Tailwind CSS -->
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Font Awesome Icons -->
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
+
     <style>
-        /* Define a background that supports the glass effect */
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(25px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes pulse-heart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
         body {
-            background: #0F0918; /* Deep dark purple background */
-            background-image: radial-gradient(circle at 10% 50%, rgba(139, 92, 246, 0.15) 0%, rgba(20, 0, 40, 0.9) 80%);
-            transition: background-color 0.3s;
+            background: linear-gradient(135deg, #0a0118 0%, #1a0b2e 50%, #160b28 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%);
+            top: -200px;
+            right: -200px;
+            animation: glow 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+            bottom: -150px;
+            left: -150px;
+            animation: glow 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .animate-section {
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
         }
         
-        /* Custom scrollbar */
-        textarea::-webkit-scrollbar { width: 8px; }
-        textarea::-webkit-scrollbar-thumb { background-color: #a855f7; border-radius: 4px; }
-        textarea::-webkit-scrollbar-track { background-color: #1f2937; }
-        
-        /* Glassmorphism Card Style */
+        .animate-delay-1 { animation-delay: 0.1s; }
+        .animate-delay-2 { animation-delay: 0.3s; }
+        .animate-delay-3 { animation-delay: 0.5s; }
+
         .glass-card {
-            background-color: rgba(30, 0, 50, 0.35); /* Increased opacity for better contrast */
-            backdrop-filter: blur(15px); /* Increased blur */
-            border: 1px solid rgba(168, 85, 247, 0.5); /* Stronger border */
-            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5); /* Deeper shadow */
-            transition: all 0.4s ease-in-out;
+            background: rgba(25, 10, 45, 0.6);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .glass-card:hover {
-            border: 1px solid #d8b4fe; /* Light border on hover */
-            transform: translateY(-2px);
-            box-shadow: 0 15px 50px 0 rgba(168, 85, 247, 0.3);
+            border-color: rgba(216, 180, 254, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(168, 85, 247, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
-        /* Primary Gradient for Buttons */
+        .upload-hover {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-hover::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent, rgba(168, 85, 247, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .upload-hover:hover::before {
+            transform: translateX(100%);
+        }
+
+        .upload-hover:hover {
+            background: rgba(168, 85, 247, 0.08);
+            border-color: #c084fc;
+            transform: scale(1.02);
+        }
+
         .gradient-button {
-            background: linear-gradient(90deg, #9333ea 0%, #d8b4fe 100%);
-            box-shadow: 0 4px 25px rgba(168, 85, 247, 0.6); /* Stronger initial glow */
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-        .gradient-button:hover {
-            background: linear-gradient(90deg, #a855f7 0%, #e9d5ff 100%);
-            transform: scale(1.005) translateY(-1px);
-            box-shadow: 0 8px 35px rgba(168, 85, 247, 0.9); /* Intense glow on hover */
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%);
+            background-size: 200% 200%;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Input Field Hover/Focus Styles */
-        .glass-input:hover {
-            background-color: rgba(255, 255, 255, 0.1); /* Subtle light hover on input */
+        .gradient-button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%) skewX(-20deg);
+            transition: transform 0.6s;
         }
-        
-        /* Flash Message Styles */
-        .flash-error { 
-            background-color: rgba(239, 68, 68, 0.2); 
-            color: #fca5a5; 
-            border: 1px solid #ef4444; 
+
+        .gradient-button:hover::before {
+            transform: translateX(200%) skewX(-20deg);
         }
-        .flash-success { 
-            background-color: rgba(16, 185, 129, 0.2); 
-            color: #a7f3d0; 
-            border: 1px solid #10b981; 
+
+        .gradient-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(168, 85, 247, 0.5), 0 0 20px rgba(168, 85, 247, 0.3);
+            background-position: 100% 0;
         }
-        
-        .text-purple-vibrant {
-            color: #e9d5ff;
-            text-shadow: 0 0 8px rgba(168, 85, 247, 0.8); /* Sharper text glow */
+
+        .gradient-button:active {
+            transform: translateY(-1px);
+        }
+
+        .icon-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: rgba(168, 85, 247, 0.6);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 8px;
+        }
+
+        .heart-pulse {
+            animation: pulse-heart 1.5s ease-in-out infinite;
         }
     </style>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        'main-bg': '#0F0918',
-                        'purple-500': '#a855f7',
-                    }
-                }
-            }
-        }
 
-        /**
-         * Updates the displayed filename when a file is selected.
-         */
+    <script>
         function updateFileName(input) {
             const fileNameSpan = document.getElementById('file-name');
-            if (input.files && input.files.length > 0) {
+            const fileHelper = document.getElementById('file-helper');
+            
+            if (input.files.length > 0) {
                 fileNameSpan.textContent = input.files[0].name;
+                fileHelper.textContent = `Size: ${(input.files[0].size / 1024).toFixed(1)} KB`;
             } else {
-                fileNameSpan.textContent = 'Click to Browse or Drop';
+                fileNameSpan.textContent = "Click to Browse or Drag & Drop";
+                fileHelper.textContent = "Supports: MD, TEX, HTML, TXT, ZIP";
             }
         }
     </script>
 </head>
-<body class="font-sans min-h-screen p-4 sm:p-8 flex flex-col items-center text-gray-100">
 
-    <div class="w-full max-w-4xl glass-card rounded-[30px] p-6 sm:p-10 hover:shadow-purple-900/80">
-        <header class="mb-12 text-center">
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-purple-vibrant flex items-center justify-center mb-2 drop-shadow-lg">
-                <!-- Custom PNG Icon -->
-                <img src="https://cdn-icons-png.freepik.com/512/13904/13904080.png" class="w-12 h-12 mr-4 drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]" alt="Document Conversion Icon">
+<body class="text-gray-100 font-sans flex justify-center p-6">
+
+    <div class="w-full max-w-4xl glass-card rounded-3xl p-10 animate-section animate-delay-1">
+
+        <!-- Header -->
+        <header class="text-center mb-14 animate-section animate-delay-2">
+            <div class="flex justify-center mb-4">
+                <img src="https://cdn-icons-png.freepik.com/512/13904/13904080.png" class="w-16 h-16 icon-float" alt="Document Converter Icon">
+            </div>
+            <h1 class="text-5xl font-extrabold bg-gradient-to-r from-purple-300 via-purple-200 to-pink-200 bg-clip-text text-transparent mb-3">
                 Universal Document Converter
             </h1>
-            <p class="text-gray-300 text-xl font-light">
-                Your seamless, high-fidelity document processor.
-            </p>
+            <p class="text-gray-400 text-base tracking-wide">Transform any format into professional DOCX files instantly</p>
+            <div class="flex justify-center gap-3 mt-4 text-xs text-gray-500">
+                <span class="flex items-center gap-1"><i class="fa-solid fa-bolt text-yellow-400"></i> Lightning Fast</span>
+                <span>•</span>
+                <span class="flex items-center gap-1"><i class="fa-solid fa-shield-halved text-green-400"></i> Secure</span>
+                <span>•</span>
+                <span class="flex items-center gap-1"><i class="fa-solid fa-sparkles text-purple-400"></i> High Quality</span>
+            </div>
         </header>
 
-        <!-- Flash Messages Display -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="mb-8 p-4 rounded-xl text-center">
-                    {% for category, message in messages %}
-                        <li class="p-3 rounded-xl text-sm font-medium border-2 {% if 'Error' in message or 'failed' in message or 'not found' in message %}flash-error{% else %}flash-success{% endif %}">
-                            <i class="fa-solid {% if 'Error' in message or 'failed' in message or 'not found' in message %}fa-circle-exclamation{% else %}fa-circle-check{% endif %} mr-2"></i> {{ message }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-
-        <!-- Instruction for Multi-File Projects - Enhanced hover effect -->
-        <div class="bg-gray-800/40 p-5 rounded-xl border border-purple-500/50 mb-8 text-sm hover:border-purple-500 transition duration-300 transform hover:scale-[1.005]">
-            <h3 class="font-bold text-purple-vibrant mb-2"><i class="fa-solid fa-folder-tree mr-2"></i> Multi-File LaTeX Project Support:</h3>
-            <p class="text-gray-300">
-                To convert a full LaTeX project (including figures, bibliography, and multiple `.tex` files), please:
-                <ol class="list-decimal list-inside ml-4 mt-2 space-y-1">
-                    <li>Ensure your main LaTeX file (with `\begin{document}`) is named **`main.tex`**.</li>
-                    <li>Gather all `.tex` files, figures, and bibliography files into a single **`.zip`** archive.</li>
-                    <li>Upload the `.zip` file below.</li>
-                </ol>
-            </p>
-        </div>
-
-
-        <!-- Conversion Form -->
+        <!-- Form -->
         <form method="POST" action="/convert" enctype="multipart/form-data" class="space-y-8">
-            
-            <!-- Filename and Upload Section (Responsive Layout) -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                <!-- Filename Input -->
-                <label class="block md:col-span-2">
-                    <span class="text-base font-semibold text-gray-300 mb-2 block">1. Output Filename</span>
-                    <div class="relative">
-                        <input type="text" name="output_filename" placeholder="e.g., My_Report" value="document_export"
-                               class="w-full p-4 pl-12 glass-card rounded-xl text-gray-200 focus:ring-purple-500 focus:ring-2 focus:border-transparent transition duration-150 text-base border-gray-600/50 bg-gray-900/50 glass-input">
-                        <i class="fa-solid fa-file-signature absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-500"></i>
-                        <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm font-mono select-none">.docx</span>
-                    </div>
-                </label>
 
-                <!-- File Upload -->
-                <label class="block">
-                    <span class="text-base font-semibold text-gray-300 mb-2 block">2. Upload File (Optional)</span>
-                    <div class="flex flex-col items-center justify-center p-4 glass-card border-2 border-purple-500/50 border-dashed rounded-xl cursor-pointer hover:bg-gray-700/50 transition duration-200 h-full hover:border-purple-500">
-                        <i class="fa-solid fa-cloud-arrow-up text-purple-500 text-2xl mb-1"></i>
-                        <span class="text-sm text-gray-300 font-medium truncate" id="file-name">Click to Browse or Drop</span>
-                        <input type="file" name="file" class="hidden" accept=".md, .tex, .latex, .html, .htm, .txt, .zip" 
-                            onchange="updateFileName(this)">
-                    </div>
+            <!-- Step 1 -->
+            <div class="group animate-section animate-delay-2">
+                <label class="text-gray-200 font-semibold block mb-3 flex items-center">
+                    <span class="step-number">1</span>
+                    Output Filename
+                </label>
+                <div class="relative">
+                    <input type="text" name="output_filename" value="document_export"
+                        class="w-full p-4 rounded-xl glass-card bg-black/40 focus:ring-purple-500 focus:ring-2 pl-12 pr-20 text-gray-100 placeholder-gray-500 transition-all border border-transparent"
+                        placeholder="My_Report">
+                    <i class="fa-solid fa-file-signature absolute left-4 top-1/2 -translate-y-1/2 text-purple-400 text-lg"></i>
+                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-mono text-sm bg-purple-900/30 px-2 py-1 rounded">.docx</span>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="group animate-section animate-delay-3">
+                <label class="text-gray-200 font-semibold block mb-3 flex items-center">
+                    <span class="step-number">2</span>
+                    Upload File <span class="text-gray-500 text-sm font-normal ml-2">(Optional)</span>
+                </label>
+                <label class="flex flex-col items-center justify-center p-8 h-36 glass-card rounded-xl border-2 border-dashed border-purple-400/30 cursor-pointer upload-hover">
+                    <i class="fa-solid fa-cloud-arrow-up text-purple-400 text-4xl mb-3"></i>
+                    <span id="file-name" class="text-sm text-gray-300 font-medium">Click to Browse or Drag & Drop</span>
+                    <span id="file-helper" class="text-xs text-gray-500 mt-1">Supports: MD, TEX, HTML, TXT, ZIP</span>
+                    <input type="file" name="file" class="hidden" accept=".md,.tex,.latex,.html,.htm,.txt,.zip"
+                        onchange="updateFileName(this)">
                 </label>
             </div>
 
-            <div class="relative flex items-center">
-                <div class="flex-grow border-t border-gray-700/50"></div>
-                <span class="flex-shrink mx-4 text-gray-500 text-sm font-medium">OR</span>
-                <div class="flex-grow border-t border-gray-700/50"></div>
+            <!-- Divider -->
+            <div class="flex items-center gap-4 my-6 animate-section animate-delay-3">
+                <div class="flex-1 border-t border-gray-700/50"></div>
+                <span class="text-gray-500 text-sm font-medium px-3 py-1 glass-card rounded-full">OR</span>
+                <div class="flex-1 border-t border-gray-700/50"></div>
             </div>
 
-            <!-- Text Area Section -->
-            <label class="block">
-                <span class="text-lg font-semibold text-gray-300 mb-2 block">3. Paste Text Here</span>
-                <textarea 
-                    name="content"
-                    rows="10" 
-                    placeholder="Paste your content here (Markdown, LaTeX, or Plain Text)... Formulas like $E=mc^2$ are fully supported!"
-                    class="w-full p-4 glass-card rounded-xl focus:border-purple-500 focus:ring-purple-500 focus:ring-2 transition duration-150 resize-none shadow-inner text-base text-gray-200 border-gray-600/50 bg-gray-900/50 glass-input"
-                ></textarea>
-            </label>
-            
-            <!-- Conversion Button -->
-            <button type="submit" class="w-full text-white font-extrabold py-4 px-6 rounded-xl gradient-button text-xl uppercase tracking-wider">
-                <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Convert & Download DOCX
+            <!-- Step 3 -->
+            <div class="group animate-section animate-delay-3">
+                <label class="text-gray-200 font-semibold block mb-3 flex items-center">
+                    <span class="step-number">3</span>
+                    Paste Text Here
+                </label>
+                <textarea rows="10" name="content"
+                    class="w-full glass-card bg-black/40 p-4 rounded-xl resize-none focus:ring-purple-500 focus:ring-2 text-gray-100 placeholder-gray-500 transition-all border border-transparent"
+                    placeholder="Paste your Markdown, LaTeX, HTML, or plain text here..."></textarea>
+            </div>
+
+            <!-- Button -->
+            <button type="submit"
+                class="gradient-button w-full py-5 rounded-xl font-bold text-lg tracking-wide text-white shadow-lg animate-section animate-delay-3">
+                <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>
+                Convert & Download
             </button>
         </form>
-    </div>
 
-    <footer class="mt-12 text-center text-gray-500 text-sm">
-        <p class="mt-1">
-            Created with <i class="fa-solid fa-heart text-red-500"></i> by **Jiad Al Fahmid**
-        </p>
-    </footer>
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-gray-500 text-sm animate-section animate-delay-3">
+            <p>Created with <i class="fa-solid fa-heart text-fuchsia-500 heart-pulse"></i> by <span class="text-purple-300 font-semibold">Jiad Al Fahmid</span></p>
+        </footer>
+    </div>
 
 </body>
 </html>
