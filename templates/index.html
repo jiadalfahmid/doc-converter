@@ -167,7 +167,7 @@
             animation: float 3s ease-in-out infinite;
         }
 
-        input:focus, textarea:focus {
+        input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: rgba(168, 85, 247, 0.6);
         }
@@ -250,7 +250,7 @@
             <div class="group animate-section animate-delay-3">
                 <label class="text-gray-200 font-semibold block mb-3 flex items-center">
                     <span class="step-number">2</span>
-                    Upload File <span class="text-gray-500 text-sm font-normal ml-2">(Optional)</span>
+                    Upload File <span class="text-gray-500 text-sm font-normal ml-2">(Optional: Select this OR paste text below)</span>
                 </label>
                 <label class="flex flex-col items-center justify-center p-8 h-36 glass-card rounded-xl border-2 border-dashed border-purple-400/30 cursor-pointer upload-hover">
                     <i class="fa-solid fa-cloud-arrow-up text-purple-400 text-4xl mb-3"></i>
@@ -268,15 +268,29 @@
                 <div class="flex-1 border-t border-gray-700/50"></div>
             </div>
 
-            <!-- Step 3 -->
+            <!-- Step 3: Combined Format Selector and Text Area -->
             <div class="group animate-section animate-delay-3">
-                <label class="text-gray-200 font-semibold block mb-3 flex items-center">
-                    <span class="step-number">3</span>
-                    Paste Text Here
-                </label>
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">
+                    <label class="text-gray-200 font-semibold block flex items-center mb-2 sm:mb-0">
+                        <span class="step-number">3</span>
+                        Paste Text Here
+                    </label>
+
+                    <div class="flex items-center">
+                        <label for="input_format_selector" class="text-gray-400 text-sm mr-2 font-medium">Input Format:</label>
+                        <select id="input_format_selector" name="input_format_selector" 
+                            class="p-2 rounded-lg glass-card text-gray-200 bg-black/40 text-sm border-purple-400/30 focus:ring-purple-500 focus:ring-1 cursor-pointer">
+                            <option value="md">Markdown (Recommended for mixed content)</option>
+                            <option value="tex">LaTeX (For pure LaTeX documents)</option>
+                            <option value="html">HTML</option>
+                            <option value="txt">Plain Text</option>
+                        </select>
+                    </div>
+                </div>
+
                 <textarea rows="10" name="content"
                     class="w-full glass-card bg-black/40 p-4 rounded-xl resize-none focus:ring-purple-500 focus:ring-2 text-gray-100 placeholder-gray-500 transition-all border border-transparent"
-                    placeholder="Paste your Markdown, LaTeX, HTML, or plain text here..."></textarea>
+                    placeholder="Paste your content here..."></textarea>
             </div>
 
             <!-- Button -->
