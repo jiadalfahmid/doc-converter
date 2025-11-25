@@ -18,9 +18,9 @@ def get_file_extension(filename):
     return 'txt' # Default to text if no extension
 
 def get_input_format(ext):
-    """Maps common extensions to Pandoc input formats."""
+    """Maps common extensions to Pandoc input formats. CHANGED TO commonmark for better list support."""
     if ext in ['md', 'markdown']:
-        return 'markdown'
+        return 'commonmark' # Changed from 'markdown' to 'commonmark'
     elif ext in ['tex', 'latex']:
         return 'latex'
     elif ext in ['html', 'htm']:
@@ -45,7 +45,7 @@ def convert():
         flash('Please paste text or upload a file before converting.')
         return redirect(url_for('index'))
 
-    # --- NEW: Handle Filename Input ---
+    # --- Handle Filename Input ---
     output_name_raw = request.form.get('output_filename', 'converted_document').strip()
     
     # Sanitize the filename: remove invalid characters and replace spaces with underscores
