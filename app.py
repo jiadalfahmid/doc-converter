@@ -42,6 +42,8 @@ def convert():
     
     input_text = request.form.get('content', '').strip()
     uploaded_file = request.files.get('file')
+    # --- NEW: Get selected input format for pasted text
+    input_format_selector = request.form.get('input_format_selector', 'md') 
 
     if not input_text and (not uploaded_file or not uploaded_file.filename):
         flash('Please paste text or upload a file before converting.')
@@ -82,7 +84,7 @@ def convert():
             ext = get_file_extension(uploaded_file.filename)
             
             if ext == 'zip':
-                # --- NEW: Handle ZIP file containing a full LaTeX project ---
+                # --- Handle ZIP file containing a full LaTeX project ---
                 zip_filepath = os.path.join(tmpdir, "uploaded_project.zip")
                 uploaded_file.save(zip_filepath)
                 
@@ -91,15 +93,12 @@ def convert():
                 
                 try:
                     with zipfile.ZipFile(zip_filepath, 'r') as zip_ref:
-                        # Extract contents into the new subdirectory
                         zip_ref.extractall(project_dir)
                         
-                    # Set Pandoc input to the main LaTeX file within the extracted folder
                     input_filename = "main.tex"
                     input_filepath = os.path.join(project_dir, input_filename)
                     
                     if not os.path.exists(input_filepath):
-                        # Use a more descriptive error for the user
                         flash('ZIP extracted, but "main.tex" not found in root of archive. Please rename your main file to "main.tex" before zipping.')
                         return redirect(url_for('index'))
                     
@@ -108,7 +107,6 @@ def convert():
                 except zipfile.BadZipFile:
                     flash("The uploaded file is not a valid ZIP archive.")
                     return redirect(url_for('index'))
-                # ------------------------------------------------------------
             
             else:
                 # Handle single file upload (Markdown, HTML, TXT, single .tex)
@@ -118,8 +116,8 @@ def convert():
                 uploaded_file.save(input_filepath)
 
         else:
-            # Handle pasted text (default to Markdown)
-            ext = 'md' 
+            # --- Handle pasted text ---
+            ext = input_format_selector # Use the user's selection for the extension
             input_filename = "input_data"
             input_filepath = os.path.join(tmpdir, input_filename)
             input_filepath += f".{ext}"
@@ -130,6 +128,7 @@ def convert():
             raise Exception("Input path could not be determined.")
 
         # 2. Configure Pandoc
+        # This will now correctly use 'commonmark' if 'md' is selected, or 'latex' if 'tex' is selected.
         input_format = get_input_format(ext)
         output_filename = output_name_safe
         output_filepath = os.path.join(tmpdir, output_filename)
@@ -145,8 +144,6 @@ def convert():
         ]
         
         # 3. Execute Pandoc
-        # Change current working directory to the directory containing the input file
-        # This allows Pandoc to find assets (like images) that are referenced relative to the main file.
         cwd = os.path.dirname(input_filepath)
         
         subprocess.run(
@@ -154,7 +151,7 @@ def convert():
             check=True,
             capture_output=True,
             text=True,
-            cwd=cwd # <-- CRUCIAL: Run Pandoc in the source directory
+            cwd=cwd
         )
             
         # 4. Return the DOCX file
@@ -170,7 +167,6 @@ def convert():
         flash(f'Conversion failed (Input format: {ext.upper()}). Error: {error_detail}')
         return redirect(url_for('index'))
     except FileNotFoundError as e:
-        # Catch specific FileNotFoundError to give better feedback (e.g., main.tex not found)
         if 'main.tex' in str(e):
              flash(str(e))
         else:
